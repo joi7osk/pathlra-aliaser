@@ -1,6 +1,6 @@
 'use strict';
 
 module.exports = {
-    getAllUsers: () => 'all users',
-    getUser: (id) => `User ${id}`
+  getAllUsers: () => 'all users',
+  getUser: (id) => `User ${id}`,
 };

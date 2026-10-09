@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 /**
  * pathlra-aliaser
@@ -56,17 +56,17 @@
  *
  */
 
-const p = require("path");
-const m = require("module");
-const f = require("fs");
-const { performance: perf } = require("perf_hooks");
+const p = require('path');
+const m = require('module');
+const f = require('fs');
+const { performance: perf } = require('perf_hooks');
 
 // Platform-agnostic path separator handling
 var s = p.sep;
 var sc = s.charCodeAt(0);
 var f_sl = 47; // Forward slash code
 var b_sl = 92; // Backslash code
-var nul = "\0"; // Null separator for cache keys
+var nul = '\0'; // Null separator for cache keys
 var csz = 10000; // Max LRU cache size
 var ev_b = Math.floor(csz * 0.1); // Eviction batch size
 var lin = 0; // Strategy ID: linear scan
@@ -145,7 +145,7 @@ class rn {
   constructor() {
     this.c = null;
     this.t = null;
-    this.e = "";
+    this.e = '';
     this.l = false;
   }
 }
@@ -223,7 +223,7 @@ class rt {
     let n = this.r;
     let lm = null;
     let d = 0;
-    let ma = "";
+    let ma = '';
     const rl = req.length;
     while (d < rl && n) {
       if (n.l) {
@@ -246,13 +246,9 @@ class rt {
         continue;
       }
       let k = 0;
-      while (k < el && d + k < rl && ed.charCodeAt(k) === req.charCodeAt(d + k))
-        k++;
+      while (k < el && d + k < rl && ed.charCodeAt(k) === req.charCodeAt(d + k)) k++;
       if (k === 0) break;
-      if (
-        ch.l &&
-        (d + k === rl || [f_sl, b_sl, sc].includes(req.charCodeAt(d + k)))
-      ) {
+      if (ch.l && (d + k === rl || [f_sl, b_sl, sc].includes(req.charCodeAt(d + k)))) {
         return { a: ma + ed.slice(0, k), t: ch.t };
       }
       break;
@@ -276,16 +272,14 @@ const Mod = module.constructor.length > 1 ? module.constructor : m;
 const _nmp = Mod._nodeModulePaths;
 const _rfn = Mod._resolveFilename;
 
-
 Mod._nodeModulePaths = function (frm) {
   if (frm.includes(`${s}node_modules${s}`)) return _nmp.call(this, frm);
   const ps = _nmp.call(this, frm);
   return pa.length ? pa.concat(ps) : ps;
 };
 
-
 Mod._resolveFilename = function (req, prnt, isM, opts) {
-  const pp = prnt?.filename || "";
+  const pp = prnt?.filename || '';
 
   if (pp.includes(`${s}node_modules${s}`)) {
     return _rfn.call(this, req, prnt, isM, opts);
@@ -324,28 +318,19 @@ Mod._resolveFilename = function (req, prnt, isM, opts) {
       mr = tree.fnd(req);
     }
 
-
     if (mr) {
       const { a, t } = mr;
-      const rtg = typeof t === "function" ? t(pp, req, a) : t;
-      if (typeof rtg !== "string") {
-        throw new Error(
-          "pathlra-aliaser Custom handler must return string path",
-        );
+      const rtg = typeof t === 'function' ? t(pp, req, a) : t;
+      if (typeof rtg !== 'string') {
+        throw new Error('pathlra-aliaser Custom handler must return string path');
       }
       if (!isValidTarget(rtg)) {
         throw new Error(`pathlra-aliaser Invalid alias target detected ${rtg}`);
       }
       const sf = req.slice(a.length);
-      rr = sf
-        ? rtg +
-          (sf.charCodeAt(0) === sc || sf.charCodeAt(0) === f_sl ? sf : s + sf)
-        : rtg;
-      if (dbg)
-        console.log(`pathlra-aliaser RESOLVED ${req} → ${rr} (via ${a})`);
-    }
-
-    else if (dbg) {
+      rr = sf ? rtg + (sf.charCodeAt(0) === sc || sf.charCodeAt(0) === f_sl ? sf : s + sf) : rtg;
+      if (dbg) console.log(`pathlra-aliaser RESOLVED ${req} → ${rr} (via ${a})`);
+    } else if (dbg) {
       console.log(`pathlra-aliaser NO MATCH ${req}`);
     }
   }
@@ -356,9 +341,9 @@ Mod._resolveFilename = function (req, prnt, isM, opts) {
 };
 
 function isValidTarget(t) {
-  if (t.includes("..")) return false;
-  if (t.includes("~")) return false;
-  if (t.includes("\0")) return false;
+  if (t.includes('..')) return false;
+  if (t.includes('~')) return false;
+  if (t.includes('\0')) return false;
   try {
     p.normalize(t);
     return true;
@@ -447,43 +432,41 @@ function init(opts = {}) {
   const st = perf.now();
   const bs = gbp(opts);
   const pkg = lpj(bs);
-  lastPkgPath = p.join(bs, "package.json");
+  lastPkgPath = p.join(bs, 'package.json');
 
   if (opts.debug) dbg = true;
   if (opts.hotReload) hrld = true;
 
   if (hrld && lastPkgPath) {
     f.watch(lastPkgPath, () => {
-      console.log("pathlra-aliaser package.json changed. Reloading aliases...");
+      console.log('pathlra-aliaser package.json changed. Reloading aliases...');
       rst();
       init({ base: bs, debug: dbg, hotReload: hrld });
     });
   }
 
-  const cfgKey = Object.keys(pkg).find((k) => k.startsWith("path_aliaser"));
+  const cfgKey = Object.keys(pkg).find((k) => k.startsWith('path_aliaser'));
   const als = cfgKey ? pkg[cfgKey] : {};
 
   if (Object.keys(als).length === 0) {
-    als["@root"] = ".";
-    als["@src"] = "src";
-    console.log(
-      "pathlra-aliaser No aliases found. Using defaults: @root → ., @src → src",
-    );
+    als['@root'] = '.';
+    als['@src'] = 'src';
+    console.log('pathlra-aliaser No aliases found. Using defaults: @root → ., @src → src');
   }
 
   for (const [a, t] of Object.entries(als)) {
-    if (typeof t !== "string" && typeof t !== "function") {
+    if (typeof t !== 'string' && typeof t !== 'function') {
       throw new Error(
         `pathlra-aliaser Invalid alias target for "${a}". Must be string or function`,
       );
     }
-    const r = t.startsWith("/") ? t : p.join(bs, t);
+    const r = t.startsWith('/') ? t : p.join(bs, t);
     aa(a, r);
   }
 
-  const dirs = pkg._moduleDirectories || ["node_modules"];
+  const dirs = pkg._moduleDirectories || ['node_modules'];
   for (const d of dirs) {
-    if (d !== "node_modules") ap(p.join(bs, d));
+    if (d !== 'node_modules') ap(p.join(bs, d));
   }
 
   opt();
@@ -492,9 +475,7 @@ function init(opts = {}) {
   const dur = perf.now() - st;
   if (dur > 20) {
     console.warn(
-      `pathlra-aliaser Init took ${dur.toFixed(1)}ms (optimized for ${
-        am.size
-      } aliases)`,
+      `pathlra-aliaser Init took ${dur.toFixed(1)}ms (optimized for ${am.size} aliases)`,
     );
   }
 
@@ -507,22 +488,22 @@ function init(opts = {}) {
 }
 
 function gbp(o) {
-  if (typeof o === "string") o = { base: o };
-  if (o.base) return p.resolve(o.base.replace(/\/package\.json$/, ""));
-  const cands = [p.join(__dirname, "../.."), process.cwd()];
+  if (typeof o === 'string') o = { base: o };
+  if (o.base) return p.resolve(o.base.replace(/\/package\.json$/, ''));
+  const cands = [p.join(__dirname, '../..'), process.cwd()];
   for (const c of cands) {
     try {
-      f.accessSync(p.join(c, "package.json"), f.constants.R_OK);
+      f.accessSync(p.join(c, 'package.json'), f.constants.R_OK);
       return c;
     } catch {}
   }
-  throw new Error(`Failed to locate package.json in\n${cands.join("\n")}`);
+  throw new Error(`Failed to locate package.json in\n${cands.join('\n')}`);
 }
 
 function lpj(b) {
   try {
-    const pp = p.join(b, "package.json");
-    return JSON.parse(f.readFileSync(pp, "utf8"));
+    const pp = p.join(b, 'package.json');
+    return JSON.parse(f.readFileSync(pp, 'utf8'));
   } catch (e) {
     throw new Error(`Failed to load package.json: ${e.message}`);
   }
@@ -576,11 +557,11 @@ module.exports = Object.assign(init, {
       aliases: am.size,
       paths: cp.size,
       cacheSize: rc.m.size,
-      strategy: strat === lin ? "LINEAR" : "RADIX",
+      strategy: strat === lin ? 'LINEAR' : 'RADIX',
       minimalMode: minMode,
       hotReload: hrld,
       debug: dbg,
-      memory: (process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2) + " MB",
+      memory: (process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2) + ' MB',
     }),
     forceStrategy: (st) => {
       strat = st;
@@ -589,13 +570,13 @@ module.exports = Object.assign(init, {
     clearCache: () => rc.clr(),
     generateTSConfig: () => {
       const compilerOptions = {
-        baseUrl: ".",
+        baseUrl: '.',
         paths: {},
       };
       am.forEach((target, alias) => {
         let rel = p.relative(process.cwd(), target);
-        if (!rel.startsWith(".")) rel = "./" + rel;
-        compilerOptions.paths[alias + "/*"] = [rel + "/*"];
+        if (!rel.startsWith('.')) rel = './' + rel;
+        compilerOptions.paths[alias + '/*'] = [rel + '/*'];
         compilerOptions.paths[alias] = [rel];
       });
       return { compilerOptions };

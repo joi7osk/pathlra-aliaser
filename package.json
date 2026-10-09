@@ -4,7 +4,8 @@
   "description": "High-performance path alias resolver for Node.js with LRU caching and radix-tree optimization",
   "main": "index.js",
   "scripts": {
-    "test": "node index.js"
+    "test": "node index.js",
+    "format": "prettier --write ."
   },
   "keywords": [
     "path",
@@ -23,18 +24,19 @@
     "module-loader",
     "sub-millisecond"
   ],
-
   "author": "mgv-hub",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mgv-hub/pathlra-aliaser.git"
   },
+  "devDependencies": {
+    "prettier": "^3.4.2"
+  },
   "bugs": {
     "url": "https://github.com/mgv-hub/pathlra-aliaser/issues"
   },
   "homepage": "https://github.com/mgv-hub/pathlra-aliaser#readme",
-  
   "engines": {
     "node": ">=14.0.0"
   }
